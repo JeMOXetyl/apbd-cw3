@@ -2,17 +2,23 @@
 
 public class Container
 {
-    private string SerialNumber { get; set; }
-    private double LoadWeight { get; set; }
-    private double ConHeight { get; set; }
-    private double ConWeight { get; set; }
-    private double ConDepth { get; set; }
-    private string ConNumber { get; set; }
-    private double MaxWeight { get; set; }
+    private static Dictionary<string, int> _types = new Dictionary<string, int>();
+    public string SerialNumber { get; }
+    public double LoadWeight { get; set; }
+    public double ConHeight { get; }
+    public double ConWeight { get; }
+    public double ConDepth { get; }
+    public string ConNumber { get; }
+    public double MaxWeight { get; }
 
-    public Container(double conHeight, double conWeight, double conDepth, double maxWeight)
+    protected Container(string type, 
+                        double conHeight, 
+                        double conWeight, 
+                        double conDepth, 
+                        double maxWeight)
     {
-        SerialNumber = $"KON-";
+        _types.TryAdd(type, 1);
+        SerialNumber = $"KON-{type}-{_types[type]++}";
         ConHeight = conHeight;
         ConWeight = conWeight;
         ConDepth = conDepth;
@@ -28,11 +34,11 @@ public class Container
     {
         if (loadWeight > MaxWeight)
             throw new OverfillException("Max load exceeded");
-        LoadWeight = loadWeight;
+        LoadWeight += loadWeight;
     }
 
     public override string ToString()
     {
-        return $"{SerialNumber}, load weight: {LoadWeight}kg";
+        return $"{SerialNumber}, max weight: {MaxWeight}kg, load weight: {LoadWeight}kg";
     }
 }
